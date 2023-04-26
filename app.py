@@ -21,7 +21,7 @@ model_type = st.sidebar.selectbox(
 )
 
 st.title(f'{model_type} Predictions')
-sample_img = cv2.imread('misc/spiderverse.png')
+sample_img = cv2.imread('https://github.com/Arvikj/NeuralScope_YOLOvX/raw/3ee08b1ea48b13b620c51ed5c62853d4e4abb76b/misc/spiderverse.png')
 FRAME_WINDOW = st.image(sample_img, channels='BGR')
 cap = None
 
