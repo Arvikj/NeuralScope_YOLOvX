@@ -10,7 +10,6 @@ import json
 import pandas as pd
 from model_utils import get_yolo, color_picker_fn, get_system_stat
 from ultralytics import YOLO
-import streamlit_webrtc as webrtc
 
 
 p_time = 0
