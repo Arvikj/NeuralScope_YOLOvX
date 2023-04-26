@@ -10,6 +10,7 @@ import json
 import pandas as pd
 from model_utils import get_yolo, color_picker_fn, get_system_stat
 from ultralytics import YOLO
+import streamlit_webrtc as webrtc
 
 
 p_time = 0
@@ -21,7 +22,7 @@ model_type = st.sidebar.selectbox(
 )
 
 st.title(f'{model_type} Predictions')
-sample_img = cv2.imread('misc/spiderverse.png')
+sample_img = cv2.imread('./misc/spiderverse.png')
 FRAME_WINDOW = st.image(sample_img, channels='BGR')
 cap = None
 
@@ -128,10 +129,27 @@ if not model_type == 'YOLO Model':
 
                 tfile = tempfile.NamedTemporaryFile(delete=False)
                 tfile.write(upload_video_file.read())
-                cap = cv2.VideoCapture(tfile.name)
+
+                # cap = cv2.VideoCapture(tfile.name)
+
                 # if pred:
-
-
+# -------------------------------------------------------------------------------
+                # Create a WebRTC client that streams the uploaded video file
+                webrtc_ctx = webrtc.StreamlitWebRTC(
+                    rtc_configuration={
+                        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
+                    },
+                    media_stream_constraints={
+                        "video": {
+                            "width": 640,
+                            "height": 480,
+                            "frameRate": 30,
+                        },
+                    },
+                    source_stream=webrtc.mediastreamer.VideoStream(tfile.name),
+                    key="video",
+                )
+#---------------------------------------------------------------------------------
         # Web-cam
         if options == 'Webcam':
             cam_options = st.sidebar.selectbox('Webcam Channel',
@@ -139,7 +157,24 @@ if not model_type == 'YOLO Model':
         
             if not cam_options == 'Select Channel':
                 pred = st.checkbox(f'Predict Using {model_type}')
-                cap = cv2.VideoCapture(int(cam_options))
+
+                # cap = cv2.VideoCapture(int(cam_options))
+
+                # Create a WebRTC client that streams video from the selected webcam channel
+                webrtc_ctx = webrtc.StreamlitWebRTC(
+                    rtc_configuration={
+                        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
+                    },
+                    media_stream_constraints={
+                        "video": {
+                            "width": 640,
+                            "height": 480,
+                            "frameRate": 30,
+                        },
+                    },
+                    source_stream=webrtc.mediastreamer.WebcamVideoStream(int(cam_options)),
+                    key="video",
+                )
 
 
         # RTSP
