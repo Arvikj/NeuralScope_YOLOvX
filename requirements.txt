@@ -5,3 +5,4 @@ ultralytics
 
 # Streamlit -----------------------------------
 streamlit
+streamlit-webrtc==0.16.0
